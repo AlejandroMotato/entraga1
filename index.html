@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Juegos - Universidad Santiago de Cali</title>
+    <style>
+        /* Estilos CSS básicos para la estructura y el diseño */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://i.blogs.es/54ab63/arcade/1366_2000.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Esta propiedad asegura que la imagen de fondo sea estática */
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        section {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Estilos para los elementos h1 y p */
+        h1, p {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sala de Juegos - Universidad Santiago de Cali</h1>
+</header>
+
+<nav id="menu">
+    <a href="#login">Iniciar Sesión</a>
+    <a href="#register">Registrarse</a>
+</nav>
+
+<section id="login">
+    <h2>Iniciar Sesión</h2>
+    <form action="" onsubmit="return loginUser()">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username">
+        <br>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password">
+        <br>
+        <input type="submit" value="Iniciar Sesión">
+    </form>
+    <p id="loginError" style="color: red; display: none;">Usuario o contraseña incorrectos. Inténtalo de nuevo.</p>
+</section>
+
+<section id="register">
+    <h2>Registrarse</h2>
+    <form action="" onsubmit="return registerUser()">
+        <label for="new_username">Nuevo Usuario:</label>
+        <input type="text" id="new_username" name="new_username">
+        <br>
+        <label for="new_password">Nueva Contraseña:</label>
+        <input type="password" id="new_password" name="new_password">
+        <br>
+        <input type="submit" value="Registrarse">
+    </form>
+</section>
+
+<section id="inicio">
+    <h2>Bienvenido a la Sala de Juegos</h2>
+    <p>¡Bienvenido a nuestra sala de juegos! Aquí podrás disfrutar de una variedad de actividades recreativas.</p>
+</section>
+
+<section id="reserva">
+    <h2>Reserva de Equipos</h2>
+    <p>Selecciona un equipo para reservar:</p>
+    <form action="" onsubmit="return reservarEquipo()">
+        <label for="equipos">Equipos:</label>
+        <select name="equipos" id="equipos">
+            <option value="ping_pong">Mesa de Ping Pong</option>
+            <option value="playstation">PlayStation</option>
+            <option value="air_hockey">Air Hockey</option>
+            <option value="billar">Mesa de Billar</option>
+        </select>
+        <br>
+        <label for="id">Número de Identificación:</label>
+        <input type="text" id="id" name="id">
+        <br>
+        <label for="carrera">Carrera:</label>
+        <input type="text" id="carrera" name="carrera">
+        <br>
+        <input type="submit" value="Reservar">
+    </form>
+</section>
+
+<section id="informacion">
+    <h2>Información sobre el Uso y Cuidado de Implementos</h2>
+    <p>Asegúrate de seguir las reglas de uso de los implementos y de cuidarlos adecuadamente para garantizar que todos puedan disfrutar de la sala de juegos.</p>
+</section>
+
+<script>
+    // Base de datos de usuarios simulada
+    const users = [
+        { username: "usuario", password: "contraseña" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('section');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                document.getElementById(targetId).style.display = 'block';
+            });
+        });
+    });
+
+    function registerUser() {
+        const newUsername = document.getElementById('new_username').value;
+        const newPassword = document.getElementById('new_password').value;
+        // Verificar si el usuario ya está registrado
+        const userExists = users.some(user => user.username === newUsername);
+        if (userExists) {
+            alert("¡El usuario ya está registrado!");
+        } else {
+            // Agregar nuevo usuario a la base de datos simulada
+            users.push({ username: newUsername, password: newPassword });
+            alert("¡Usuario registrado con éxito!");
+        }
+        return false; // Evitar el envío del formulario
+    }
+
+    function loginUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const sections = document.querySelectorAll('section'); // Añadir esta línea
+        
+        // Verificar credenciales
+        const user = users.find(user => user.username === username && user.password === password);
+        if (user) {
+            // Mostrar las secciones una vez que el usuario inicie sesión
+            sections.forEach(section => {
+                section.style.display = 'block';
+            });
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('menu').innerHTML += '<a href="#" onclick="logoutUser()">Cerrar Sesión</a>'; // Agregar enlace de cierre de sesión
+            document.getElementById('login').style.display = 'none'; // Ocultar la sección de inicio de sesión después de iniciar sesión
+            document.getElementById('register').style.display = 'none'; // Ocultar la sección de registro después de iniciar sesión
+            return false; // Evitar el envío del formulario
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+            return false; // Evitar el envío del formulario
+        }
+    }
+
+    function logoutUser() {
+        const sections = document.querySelectorAll('section'); // Añadir esta línea
+        
+        sections.forEach(section => {
+            section.style.display = 'none';
+        });
+        document.getElementById('login').style.display = 'block'; // Mostrar la sección de inicio de sesión después de cerrar sesión
+        document.getElementById('register').style.display = 'block'; // Mostrar la sección de registro después de cerrar sesión
+        document.getElementById('menu').innerHTML = '<a href="#login">Iniciar Sesión</a><a href="#register">Registrarse</a>'; // Restaurar los enlaces de inicio de sesión y registro
+    }
+
+    function reservarEquipo() {
+        const id = document.getElementById('id').value;
+        const carrera = document.getElementById('carrera').value;
+        alert("Equipo reservado con éxito. ID: " + id + ", Carrera: " + carrera);
+        return false; // Evitar el envío del formulario
+    }
+</script>
+
+<footer>
+    <p>&copy; 2024 Universidad Santiago de Cali - Sala de Juegos</p>
+</footer>
+
+</body>
+</html>
